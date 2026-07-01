@@ -1,0 +1,164 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+body {
+    height: 100vh;
+    /* 使用 dvh 兼容 iOS Safari 动态视口 */
+    height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    perspective: 1300px;
+    background: #000;
+}
+
+/* ========== 背景视频 ========== */
+#videofilm {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;  /* 铺满屏幕，裁剪多余部分 */
+    z-index: -1;
+}
+
+/* ========== 文字标题 ========== */
+h1 {
+    font-size: clamp(20px, 5vw, 36px);
+    color: #B1BCE6;
+    font-family: '楷体', 'KaiTi', 'STKaiti', serif;
+    text-align: center;
+    text-shadow: 0 0 20px rgba(177, 188, 230, 0.3);
+    padding: 0 12px;
+    line-height: 1.4;
+}
+
+.textone {
+    position: absolute;
+    left: 50%;
+    top: 38%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 600px;
+}
+
+.texttwo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 600px;
+}
+
+.textthree {
+    position: absolute;
+    left: 50%;
+    top: 62%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 600px;
+}
+
+/* ========== 3D 旋转文字动画 ========== */
+:root {
+    --margin-top: 0;
+    --margin-left: 0;
+    --animation-duration: 0s;
+    --animation-delay: 0s;
+}
+
+div {
+    transform-style: preserve-3d;
+}
+
+.word-box,
+.word-box .word {
+    position: absolute;
+    animation: rotY 0s linear infinite;
+    animation-duration: var(--animation-duration);
+    animation-delay: var(--animation-delay);
+}
+
+.word-box {
+    margin-top: var(--margin-top);
+}
+
+.word-box .word {
+    margin-left: var(--margin-left);
+    white-space: nowrap;
+}
+
+.word-box .word {
+    animation-duration: reverse;
+}
+
+@keyframes rotY {
+    to {
+        transform: rotateY(360deg);
+    }
+}
+
+/* ========== 移动端适配 ========== */
+@media screen and (max-width: 768px) {
+    body {
+        perspective: 800px;  /* 降低 3D 强度，提升移动端性能 */
+    }
+
+    h1 {
+        font-size: clamp(16px, 4.5vw, 24px);
+        text-shadow: 0 0 15px rgba(177, 188, 230, 0.25);
+    }
+
+    .textone { top: 35%; }
+    .texttwo { top: 48%; }
+    .textthree { top: 61%; }
+
+    /* 移动端文字动画调整 */
+    .word-box .word {
+        font-size: 14px !important;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    body {
+        perspective: 600px;
+    }
+
+    h1 {
+        font-size: clamp(14px, 4vw, 18px);
+    }
+
+    .textone { top: 32%; }
+    .texttwo { top: 46%; }
+    .textthree { top: 60%; }
+
+    .word-box .word {
+        font-size: 12px !important;
+    }
+}
+
+/* ========== 横屏手机适配 ========== */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    h1 {
+        font-size: clamp(14px, 3vh, 22px);
+    }
+
+    .textone { top: 25%; }
+    .texttwo { top: 42%; }
+    .textthree { top: 59%; }
+
+    .word-box .word {
+        font-size: 12px !important;
+    }
+}

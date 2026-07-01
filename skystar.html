@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>今晚，整片星空将为你一人闪烁</title>
+    <link rel="stylesheet" href="css/skystar.css">
+  </head>
+  <body>
+    <!-- 背景视频 - playsinline 是 iOS 必须的 -->
+    <video id="videofilm" poster="img/skystar2.jpg" autoplay muted loop playsinline
+           x5-video-player-type="h5" x5-video-player-fullscreen="true" webkit-playsinline>
+      <source src="video/skystar.mp4" type="video/mp4">
+    </video>
+
+    <div class="textone">
+      <h1>look at the stars</h1>
+    </div>
+    <div class="texttwo">
+      <h1>look how they shine for u</h1>
+    </div>
+    <div class="textthree">
+      <h1></h1>
+    </div>
+
+    <!-- 背景音乐 -->
+    <audio id="bgMusic" src="video/晴天.mp3" loop preload="auto"></audio>
+
+    <div class="container"></div>
+
+    <script>
+      (function() {
+        var audio = document.getElementById('bgMusic');
+        var hasPlayed = false;
+
+        // 尝试播放音频
+        function tryPlay() {
+          if (hasPlayed) return;
+          var p = audio.play();
+          if (p !== undefined) {
+            p.then(function() {
+              hasPlayed = true;
+              console.log('✅ 音乐开始播放');
+              // 播放成功后移除所有监听
+              removeListeners();
+            }).catch(function() {
+              console.log('⏳ 等待用户交互...');
+            });
+          }
+        }
+
+        // 移除事件监听
+        function removeListeners() {
+          document.removeEventListener('click', tryPlay);
+          document.removeEventListener('touchstart', tryPlay);
+          document.removeEventListener('touchend', tryPlay);
+          document.removeEventListener('DOMContentLoaded', tryPlay);
+        }
+
+        // 多种方式触发播放（覆盖不同移动端场景）
+        // 1. 页面加载完成后尝试
+        window.addEventListener('DOMContentLoaded', tryPlay);
+        // 2. 立刻尝试（如果脚本在 DOM 之后执行）
+        tryPlay();
+        // 3. 用户触摸/点击时播放（兼容 iOS/Android 浏览器策略）
+        document.addEventListener('touchstart', tryPlay, { passive: true });
+        document.addEventListener('touchend', tryPlay, { passive: true });
+        document.addEventListener('click', tryPlay);
+
+        // 4. 微信/QQ 内置浏览器 - WeixinJSBridgeReady
+        if (typeof WeixinJSBridge !== 'undefined') {
+          WeixinJSBridge.invoke('getNetworkType', {}, function() {
+            tryPlay();
+          });
+        }
+        document.addEventListener('WeixinJSBridgeReady', function() {
+          tryPlay();
+        }, false);
+
+        // 5. 页面可见性变化时重试（App 切换回来时）
+        document.addEventListener('visibilitychange', function() {
+          if (!document.hidden && !hasPlayed) {
+            tryPlay();
+          }
+        });
+      })();
+    </script>
+    <script src="js/skystar.js"></script>
+  </body>
+</html>
